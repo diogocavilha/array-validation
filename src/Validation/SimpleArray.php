@@ -84,13 +84,13 @@ class SimpleArray
     private function getMessageForInvalidFields($input, $filteredData)
     {
         $invalidFields = array_diff(array_keys($input), array_keys($filteredData));
-        $messagePart = [];
+        $fieldsLog = [];
 
-        foreach ($invalidFields as $value) {
-            $messagePart[] = sprintf('%s: %s', $value, $input[$value]);
+        foreach ($invalidFields as $field) {
+            $fieldsLog[] = sprintf('%s: %s', $field, $input[$field]);
         }
 
-        return 'Invalid params: ' . implode(', ', $messagePart);
+        return 'Invalid params: ' . implode(', ', $fieldsLog);
     }
 
     private function getMessageForRequiredFields($input, $requiredFields)
