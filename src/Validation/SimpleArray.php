@@ -11,7 +11,7 @@ use \RuntimeException;
  *
  * @author Diogo Alexsander Cavilha <diogocavilha@gmail.com>
  */
-class Simple
+class SimpleArray
 {
     private $requiredFields = [];
     private $fields = [];

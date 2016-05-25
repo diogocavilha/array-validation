@@ -1,14 +1,14 @@
 <?php
 
-use Validation\Simple;
+use Validation\SimpleArray;
 
-class SimpleTest extends \PHPUnit_Framework_TestCase
+class SimpleArrayTest extends \PHPUnit_Framework_TestCase
 {
     private $class;
 
     public function setUp()
     {
-        $this->class = new Simple();
+        $this->class = new SimpleArray();
     }
 
     /**
@@ -33,7 +33,7 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
         ];
 
         $this->assertTrue(method_exists($this->class, 'setRequiredFields'), 'Method setRequiredFields must exist.');
-        $this->assertInstanceOf('\Validation\Simple', $this->class->setRequiredFields($testField), 'Not a fluent interface.');
+        $this->assertInstanceOf('\Validation\SimpleArray', $this->class->setRequiredFields($testField), 'Not a fluent interface.');
     }
 
     /**
@@ -46,7 +46,7 @@ class SimpleTest extends \PHPUnit_Framework_TestCase
         ];
 
         $this->assertTrue(method_exists($this->class, 'setFields'), 'Method setFields must exist.');
-        $this->assertInstanceOf('\Validation\Simple', $this->class->setFields($testField), 'Not a fluent interface.');
+        $this->assertInstanceOf('\Validation\SimpleArray', $this->class->setFields($testField), 'Not a fluent interface.');
     }
 
     /**
