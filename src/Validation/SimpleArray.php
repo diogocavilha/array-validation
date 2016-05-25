@@ -63,7 +63,7 @@ class SimpleArray
     private function validateRequiredFields(array $input)
     {
         if (count(array_intersect_key($this->requiredFields, $input)) != count($this->requiredFields)) {
-            throw new RuntimeException($this->getMessageForRequiredFields($this->requiredFields, $input));
+            throw new RuntimeException($this->getMessageForRequiredFields($input, $this->requiredFields));
         }
 
         return $input;
@@ -81,19 +81,19 @@ class SimpleArray
         return $input;
     }
 
-    private function getMessageForInvalidFields($input, $data)
+    private function getMessageForInvalidFields($input, $filteredData)
     {
-        $diff = array_diff(array_keys($input), array_keys($data));
-        $invalidParams = [];
+        $invalidFields = array_diff(array_keys($input), array_keys($filteredData));
+        $messagePart = [];
 
-        foreach ($diff as $value) {
-            $invalidParams[] = sprintf('%s: %s', $value, $input[$value]);
+        foreach ($invalidFields as $value) {
+            $messagePart[] = sprintf('%s: %s', $value, $input[$value]);
         }
 
-        return 'Invalid params: ' . implode(', ', $invalidParams);
+        return 'Invalid params: ' . implode(', ', $messagePart);
     }
 
-    private function getMessageForRequiredFields($requiredFields, $input)
+    private function getMessageForRequiredFields($input, $requiredFields)
     {
         return 'Required params: ' . implode(', ', array_diff(array_keys($requiredFields), array_keys($input)));
     }
