@@ -62,14 +62,8 @@ class SimpleArray
 
     private function validateRequiredFields(array $input)
     {
-        if (!empty($this->requiredFields)) {
-            $intersect = array_intersect_key($this->requiredFields, $input);
-            if (count($intersect) != count($this->requiredFields)) {
-                throw new RuntimeException(
-                    'Required params: ' .
-                    implode(', ', array_diff(array_keys($this->requiredFields), array_keys($input)))
-                );
-            }
+        if (count(array_intersect_key($this->requiredFields, $input)) != count($this->requiredFields)) {
+            throw new RuntimeException($this->getMessageForRequiredFields($this->requiredFields, $input));
         }
 
         return $input;
@@ -78,19 +72,29 @@ class SimpleArray
     private function validateFields(array $input)
     {
         $this->requiredFields = array_merge($this->requiredFields, $this->fields);
-        $data = array_filter(filter_var_array($input, $this->requiredFields));
+        $filteredData = array_filter(filter_var_array($input, $this->requiredFields));
 
-        if (count($data) != count($input)) {
-            $diff = array_diff(array_keys($input), array_keys($data));
-            $invalidParams = [];
-
-            foreach ($diff as $value) {
-                $invalidParams[] = sprintf('%s: %s', $value, $input[$value]);
-            }
-
-            throw new InvalidArgumentException('Invalid params: ' . implode(', ', $invalidParams));
+        if (count($filteredData) != count($input)) {
+            throw new InvalidArgumentException($this->getMessageForInvalidFields($input, $filteredData));
         }
 
         return $input;
+    }
+
+    private function getMessageForInvalidFields($input, $data)
+    {
+        $diff = array_diff(array_keys($input), array_keys($data));
+        $invalidParams = [];
+
+        foreach ($diff as $value) {
+            $invalidParams[] = sprintf('%s: %s', $value, $input[$value]);
+        }
+
+        return 'Invalid params: ' . implode(', ', $invalidParams);
+    }
+
+    private function getMessageForRequiredFields($requiredFields, $input)
+    {
+        return 'Required params: ' . implode(', ', array_diff(array_keys($requiredFields), array_keys($input)));
     }
 }
