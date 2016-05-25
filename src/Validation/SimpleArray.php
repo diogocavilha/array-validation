@@ -56,7 +56,7 @@ class SimpleArray
             throw new RuntimeException();
         }
 
-        $input = $this->validateRequiredFields($input);
+        $this->validateRequiredFields($input);
         $this->validateFields($input);
     }
 
@@ -65,8 +65,6 @@ class SimpleArray
         if (count(array_intersect_key($this->requiredFields, $input)) != count($this->requiredFields)) {
             throw new RuntimeException($this->getMessageForRequiredFields($input, $this->requiredFields));
         }
-
-        return $input;
     }
 
     private function validateFields(array $input)
@@ -77,8 +75,6 @@ class SimpleArray
         if (count($filteredData) != count($input)) {
             throw new InvalidArgumentException($this->getMessageForInvalidFields($input, $filteredData));
         }
-
-        return $input;
     }
 
     private function getMessageForInvalidFields($input, $filteredData)
