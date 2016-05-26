@@ -56,41 +56,41 @@ class SimpleArray
             throw new RuntimeException();
         }
 
-        $input = $this->validateRequiredFields($input);
+        $this->validateRequiredFields($input);
         $this->validateFields($input);
     }
 
     private function validateRequiredFields(array $input)
     {
-        if (!empty($this->requiredFields)) {
-            $intersect = array_intersect_key($this->requiredFields, $input);
-            if (count($intersect) != count($this->requiredFields)) {
-                throw new RuntimeException(
-                    'Required params: ' .
-                    implode(', ', array_diff(array_keys($this->requiredFields), array_keys($input)))
-                );
-            }
+        if (count(array_intersect_key($this->requiredFields, $input)) != count($this->requiredFields)) {
+            throw new RuntimeException($this->getMessageForRequiredFields($input, $this->requiredFields));
         }
-
-        return $input;
     }
 
     private function validateFields(array $input)
     {
         $this->requiredFields = array_merge($this->requiredFields, $this->fields);
-        $data = array_filter(filter_var_array($input, $this->requiredFields));
+        $filteredData = array_filter(filter_var_array($input, $this->requiredFields));
 
-        if (count($data) != count($input)) {
-            $diff = array_diff(array_keys($input), array_keys($data));
-            $invalidParams = [];
+        if (count($filteredData) != count($input)) {
+            throw new InvalidArgumentException($this->getMessageForInvalidFields($input, $filteredData));
+        }
+    }
 
-            foreach ($diff as $value) {
-                $invalidParams[] = sprintf('%s: %s', $value, $input[$value]);
-            }
+    private function getMessageForInvalidFields($input, $filteredData)
+    {
+        $invalidFields = array_diff(array_keys($input), array_keys($filteredData));
+        $fieldsLog = [];
 
-            throw new InvalidArgumentException('Invalid params: ' . implode(', ', $invalidParams));
+        foreach ($invalidFields as $field) {
+            $fieldsLog[] = sprintf('%s: %s', $field, $input[$field]);
         }
 
-        return $input;
+        return 'Invalid params: ' . implode(', ', $fieldsLog);
+    }
+
+    private function getMessageForRequiredFields($input, $requiredFields)
+    {
+        return 'Required params: ' . implode(', ', array_diff(array_keys($requiredFields), array_keys($input)));
     }
 }
