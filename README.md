@@ -43,6 +43,8 @@ $validatorArray = new SimpleArray();
 $validatorArray
     ->setRequiredFields($rules)
     ->validate($arrayToValidate);
+    
+$data = $validatorArray->getValidArray();
 ```
 
 Validating optional fields:
