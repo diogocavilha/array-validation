@@ -15,6 +15,7 @@ class SimpleArray
 {
     private $requiredFields = [];
     private $fields = [];
+    private $validFields = [];
 
     /**
      * Sets an array of required fields to be checked.
@@ -58,6 +59,8 @@ class SimpleArray
 
         $this->validateRequiredFields($input);
         $this->validateFields($input);
+
+        return $this;
     }
 
     private function validateRequiredFields(array $input)
@@ -75,6 +78,8 @@ class SimpleArray
         if (count($filteredData) != count($input)) {
             throw new InvalidArgumentException($this->getMessageForInvalidFields($input, $filteredData));
         }
+
+        $this->validFields = $filteredData;
     }
 
     private function getMessageForInvalidFields($input, $filteredData)
@@ -92,5 +97,10 @@ class SimpleArray
     private function getMessageForRequiredFields($input, $requiredFields)
     {
         return 'Required params: ' . implode(', ', array_diff(array_keys($requiredFields), array_keys($input)));
+    }
+
+    public function getValidArray()
+    {
+        return $this->validFields;
     }
 }

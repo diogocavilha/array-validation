@@ -13,6 +13,13 @@ composer require array/validation
 
 # Usage
 
+Methods:
+
+- `setFields(array $fieldsRules)`
+- `setRequiredFields(array $requiredFieldsRules)`
+- `validate(array $input)`
+- `getValidArray()`
+
 Validating required fields:
 
 > It throws a `RuntimeException` in case any required field doesn't exist.
@@ -60,6 +67,8 @@ $validatorArray = new SimpleArray();
 $validatorArray
     ->setFields($rules)
     ->validate($arrayToValidate);
+
+$data = $validatorArray->getValidArray();
 ```
 
 Validating both:
@@ -89,4 +98,6 @@ $validatorArray
     ->setFields($fieldsRules)
     ->setRequiredFields($requiredFieldsRules)
     ->validate($arrayToValidate);
+
+$data = $validatorArray->getValidArray();
 ```

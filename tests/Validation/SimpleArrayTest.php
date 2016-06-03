@@ -162,4 +162,31 @@ class SimpleArrayTest extends \PHPUnit_Framework_TestCase
             'id' => 5,
         ]);
     }
+
+    public function testItCanReturnTheValidArray()
+    {
+        $this->assertTrue(method_exists($this->class, 'getValidArray'), 'Method getValidArray must exist');
+
+        $input = [
+            'id' => '55a',
+            'name' => '<strong>Diogo</strong>',
+            'description' => "<b>This is a test</b>, to know more about it <a href='index.phtml'>click here</a>"
+        ];
+
+        $rules = [
+            'id' => FILTER_SANITIZE_NUMBER_INT,
+            'name' => FILTER_SANITIZE_STRING,
+            'description' => FILTER_SANITIZE_STRING
+        ];
+
+        $validArray = $this->class
+            ->setFields($rules)
+            ->validate($input)
+            ->getValidArray();
+
+        $this->assertInternalType('array', $validArray, 'It must be an array');
+        $this->assertEquals('55', $validArray['id'], 'It must be 55');
+        $this->assertEquals('Diogo', $validArray['name'], 'It must be Diogo');
+        $this->assertEquals($description = 'This is a test, to know more about it click here', $validArray['description'], 'It must be ' . $description);
+    }
 }
