@@ -54,7 +54,7 @@ class SimpleArray
     public function validate(array $input)
     {
         if (empty($this->requiredFields) && empty($this->fields)) {
-            throw new RuntimeException();
+            throw new RuntimeException('There are no fields for validating.');
         }
 
         $this->validateRequiredFields($input);
@@ -75,8 +75,8 @@ class SimpleArray
         $this->requiredFields = array_merge($this->requiredFields, $this->fields);
         $filteredData = array_filter(filter_var_array($input, $this->requiredFields));
 
-        if (count($filteredData) != count($input)) {
-            throw new InvalidArgumentException($this->getMessageForInvalidFields($input, $filteredData));
+        if (count($filteredData) != count($this->requiredFields)) {
+            throw new InvalidArgumentException($this->getMessageForInvalidFields($this->requiredFields, $filteredData));
         }
 
         $this->validFields = $filteredData;

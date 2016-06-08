@@ -168,6 +168,8 @@ class SimpleArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(method_exists($this->class, 'getValidArray'), 'Method getValidArray must exist');
 
         $input = [
+            'ignored' => 'This field must be ignored',
+            'ignored_too' => 'This field must be ignored too',
             'id' => '55a',
             'name' => '<strong>Diogo</strong>',
             'description' => "<b>This is a test</b>, to know more about it <a href='index.phtml'>click here</a>"
