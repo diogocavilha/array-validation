@@ -191,4 +191,36 @@ class SimpleArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Diogo', $validArray['name'], 'It must be Diogo');
         $this->assertEquals($description = 'This is a test, to know more about it click here', $validArray['description'], 'It must be ' . $description);
     }
+
+    public function testItMustRemoveFieldsThatAreNotPresentInRules()
+    {
+        $input = [
+            'ignored' => 'This field must be ignored',
+            'ignored_too' => 'This field must be ignored too',
+            'id' => '55test',
+            'name' => '<strong>Diogo</strong>',
+            'description' => "<b>This is a test</b>, to know more about it <a href='index.phtml'>click here</a>"
+        ];
+
+        $rules = [
+            'id' => FILTER_SANITIZE_NUMBER_INT,
+            'name' => FILTER_SANITIZE_STRING,
+            'description' => FILTER_SANITIZE_STRING
+        ];
+
+        $validArray = $this->class
+            ->setFields($rules)
+            ->validate($input)
+            ->getValidArray();
+
+        $this->assertCount(3, $validArray);
+        $this->assertArrayHasKey('id', $validArray, 'Key id must exist');
+        $this->assertArrayHasKey('name', $validArray, 'Key name must exist');
+        $this->assertArrayHasKey('description', $validArray, 'Key description must exist');
+        $this->assertEquals(55, $validArray['id'], 'id must be 55');
+        $this->assertEquals('Diogo', $validArray['name'], 'name must be Diogo');
+
+        $specDescription = 'This is a test, to know more about it click here';
+        $this->assertEquals($specDescription, $validArray['description'], 'description must be ' . $specDescription);
+    }
 }

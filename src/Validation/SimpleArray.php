@@ -51,8 +51,27 @@ class SimpleArray
         return $this;
     }
 
+    private function getFieldsToRemove(array $input)
+    {
+        $allfields = array_merge($this->requiredFields, $this->fields);
+        return array_diff(array_keys($input), array_keys($allfields));
+    }
+
+    private function getInputWithoutUnwantedFields(array $input)
+    {
+        $fieldsToRemove = $this->getFieldsToRemove($input);
+
+        foreach ($fieldsToRemove as $field) {
+            unset($input[$field]);
+        }
+
+        return $input;
+    }
+
     public function validate(array $input)
     {
+        $input = $this->getInputWithoutUnwantedFields($input);
+
         if (empty($this->requiredFields) && empty($this->fields)) {
             throw new RuntimeException('There are no fields for validating.');
         }
@@ -63,20 +82,30 @@ class SimpleArray
         return $this;
     }
 
+    private function getRequiredFieldsFromInput(array $input)
+    {
+        return array_intersect_key($this->requiredFields, $input);
+    }
+
     private function validateRequiredFields(array $input)
     {
-        if (count(array_intersect_key($this->requiredFields, $input)) != count($this->requiredFields)) {
+        if (count($this->getRequiredFieldsFromInput($input)) != count($this->requiredFields)) {
             throw new RuntimeException($this->getMessageForRequiredFields($input, $this->requiredFields));
         }
     }
 
-    private function validateFields(array $input)
+    private function applyFilterTo(array $input)
     {
         $this->requiredFields = array_merge($this->requiredFields, $this->fields);
-        $filteredData = array_filter(filter_var_array($input, $this->requiredFields));
+        return array_filter(filter_var_array($input, $this->requiredFields));
+    }
+
+    private function validateFields(array $input)
+    {
+        $filteredData = $this->applyFilterTo($input);
 
         if (count($filteredData) != count($this->requiredFields)) {
-            throw new InvalidArgumentException($this->getMessageForInvalidFields($this->requiredFields, $filteredData));
+            throw new InvalidArgumentException($this->getMessageForInvalidFields($input, $filteredData));
         }
 
         $this->validFields = $filteredData;
