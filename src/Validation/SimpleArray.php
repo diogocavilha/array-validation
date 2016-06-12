@@ -17,6 +17,7 @@ class SimpleArray
     private $fields = [];
     private $validFields = [];
     private $fieldsToRemove = [];
+    private $messages = [];
 
     /**
      * Sets an array of required fields to be checked.
@@ -93,11 +94,11 @@ class SimpleArray
 
     public function validate(array $input)
     {
-        $input = $this->getInputWithoutUnwantedFields($input);
-
         if (empty($this->requiredFields) && empty($this->fields)) {
             throw new RuntimeException('There are no fields for validating.');
         }
+
+        $input = $this->getInputWithoutUnwantedFields($input);
 
         $this->validateRequiredFields($input);
         $this->validateFields($input);
@@ -114,6 +115,13 @@ class SimpleArray
     {
         if (count($this->getRequiredFieldsFromInput($input)) != count($this->requiredFields)) {
             throw new RuntimeException($this->getMessageForRequiredFields($input, $this->requiredFields));
+        }
+    }
+
+    private function validateRequiredFieldsForMessage(array $input)
+    {
+        if (count($this->getRequiredFieldsFromInput($input)) != count($this->requiredFields)) {
+            $this->createMessageForRequiredFields($input, $this->requiredFields);
         }
     }
 
@@ -151,6 +159,18 @@ class SimpleArray
         $this->validFields = $filteredData;
     }
 
+    private function validateFieldsForMessage(array $input)
+    {
+        $filteredData = $this->applyFilterTo($input);
+
+        if (count($filteredData) != count($this->requiredFields)) {
+            $this->createMessageForInvalidFields($input, $filteredData);
+            return;
+        }
+
+        $this->validFields = $filteredData;
+    }
+
     private function getMessageForInvalidFields($input, $filteredData)
     {
         $invalidFields = array_diff(array_keys($input), array_keys($filteredData));
@@ -163,9 +183,27 @@ class SimpleArray
         return 'Invalid params: ' . implode(', ', $fieldsLog);
     }
 
+    private function createMessageForInvalidFields($input, $filteredData)
+    {
+        $invalidFields = array_diff(array_keys($input), array_keys($filteredData));
+
+        foreach ($invalidFields as $field) {
+            $this->messages[] = sprintf('Field "%s" with value "%s" is not valid.', $field, $input[$field]);
+        }
+    }
+
     private function getMessageForRequiredFields($input, $requiredFields)
     {
         return 'Required params: ' . implode(', ', array_diff(array_keys($requiredFields), array_keys($input)));
+    }
+
+    private function createMessageForRequiredFields(array $input, array $requiredFields)
+    {
+        $invalidFields = array_diff(array_keys($requiredFields), array_keys($input));
+
+        foreach ($invalidFields as $field) {
+            $this->messages[] = sprintf('Field "%s" is required.', $field);
+        }
     }
 
     public function getValidArray()
@@ -177,5 +215,24 @@ class SimpleArray
     {
         $this->fieldsToRemove = $fields;
         return $this;
+    }
+
+    public function isValid(array $input)
+    {
+        $input = $this->getInputWithoutUnwantedFields($input);
+
+        $this->validateRequiredFieldsForMessage($input);
+        $this->validateFieldsForMessage($input);
+
+        if (!empty($this->messages)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function getMessages()
+    {
+        return $this->messages;
     }
 }

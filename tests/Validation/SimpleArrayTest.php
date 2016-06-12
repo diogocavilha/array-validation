@@ -271,4 +271,93 @@ class SimpleArrayTest extends \PHPUnit_Framework_TestCase
             [['phone'], 'phone'],
         ];
     }
+
+    public function testItCanCheckIfTheInputArrayIsValidForRequiredFields()
+    {
+        $this->assertTrue(method_exists($this->class, 'isValid'), 'Method isValid must exist.');
+        $this->assertTrue(method_exists($this->class, 'getMessages'), 'Method getMessages must exist.');
+
+        $input = [
+            'name' => '<strong>Diogo</strong>',
+            'description' => "<b>This is a test</b>, to know more about it <a href='index.phtml'>click here</a>",
+            'email' => 'email@domain.com',
+            'phone' => '5555555',
+        ];
+
+        $rules = [
+            'name' => FILTER_SANITIZE_STRING,
+            'description' => FILTER_SANITIZE_STRING
+        ];
+
+        $rulesRequired = [
+            'id' => FILTER_VALIDATE_INT,
+        ];
+
+        $this->class
+            ->setFields($rules)
+            ->setRequiredFields($rulesRequired);
+
+        $this->class->isValid($input);
+
+        $this->assertFalse($this->class->isValid($input), 'Must return false for required fields validation.');
+        $this->assertInternalType('array', $this->class->getMessages());
+    }
+
+    public function testItCanCheckIfTheInputArrayIsValidForOptionalFields()
+    {
+        $input = [
+            'name' => '<strong>Diogo</strong>',
+            'description' => "<b>This is a test</b>, to know more about it <a href='index.phtml'>click here</a>",
+            'email' => 'email@domain.com',
+            'phone' => '5555555 - test',
+        ];
+
+        $rules = [
+            'phone' => FILTER_VALIDATE_INT,
+            'name' => FILTER_SANITIZE_STRING,
+            'description' => FILTER_SANITIZE_STRING
+        ];
+
+        $class = new SimpleArray();
+        $class->setFields($rules);
+
+        $this->assertFalse($class->isValid($input), 'Must return false for optional fields validation.');
+
+        $specMessages = $class->getMessages();
+
+        $this->assertInternalType('array', $specMessages);
+        $this->assertCount(1, $specMessages);
+    }
+
+    public function testItCanCheckIfTheInputArrayIsValidForOptionalAndRequiredFieldsTogether()
+    {
+        $input = [
+            'name' => '<strong>Diogo</strong>',
+            'description' => "<b>This is a test</b>, to know more about it <a href='index.phtml'>click here</a>",
+            'email' => 'email@domain.com',
+            'phone' => '5555555 - test',
+        ];
+
+        $rules = [
+            'phone' => FILTER_VALIDATE_INT,
+            'name' => FILTER_SANITIZE_STRING,
+            'description' => FILTER_SANITIZE_STRING
+        ];
+
+        $rulesRequired = [
+            'id' => FILTER_VALIDATE_INT,
+            'code' => FILTER_VALIDATE_INT,
+        ];
+
+        $class = new SimpleArray();
+        $class->setFields($rules);
+        $class->setRequiredFields($rulesRequired);
+
+        $this->assertFalse($class->isValid($input), 'Must return false for optional fields validation.');
+
+        $specMessages = $class->getMessages();
+
+        $this->assertInternalType('array', $specMessages);
+        $this->assertCount(3, $specMessages);
+    }
 }
