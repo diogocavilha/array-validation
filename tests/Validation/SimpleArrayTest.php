@@ -12,21 +12,17 @@ class SimpleArrayTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessageRegEx /\w+: A non empty array is expected./
      */
-    public function itMustThrowInvalidArgumentExceptionInCaseRequriedFieldsParamIsNotValid()
+    public function testItMustThrowInvalidArgumentExceptionInCaseRequriedFieldsParamIsNotValid()
     {
         $this->assertTrue(method_exists($this->class, 'setRequiredFields'), 'Method setRequiredFields must exist.');
 
         $this->class->setRequiredFields([]);
     }
 
-    /**
-     * @test
-     */
-    public function itCanSetRequiredFieldsWithFilters()
+    public function testItCanSetRequiredFieldsWithFilters()
     {
         $testField = [
             'name' => FILTER_SANITIZE_STRING
@@ -36,10 +32,7 @@ class SimpleArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\Validation\SimpleArray', $this->class->setRequiredFields($testField), 'Not a fluent interface.');
     }
 
-    /**
-     * @test
-     */
-    public function itCanSetFieldsWithFilters()
+    public function testItCanSetFieldsWithFilters()
     {
         $testField = [
             'name' => FILTER_SANITIZE_STRING
@@ -49,10 +42,7 @@ class SimpleArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\Validation\SimpleArray', $this->class->setFields($testField), 'Not a fluent interface.');
     }
 
-    /**
-     * @test
-     */
-    public function itCanValidateAnInputByItsFilters()
+    public function testItCanValidateAnInputByItsFilters()
     {
         $this->assertTrue(method_exists($this->class, 'validate'), 'Method validate must exist.');
 
@@ -68,11 +58,10 @@ class SimpleArrayTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
      * @expectedException RuntimeException
      * @expectedExceptionMessageRegEx /Required params: \w+/
      */
-    public function itMustThrowRuntimeExceptionWhenAnyRequiredFieldIsNotPresent()
+    public function testItMustThrowRuntimeExceptionWhenAnyRequiredFieldIsNotPresent()
     {
         $this->assertTrue(method_exists($this->class, 'validate'), 'Method validate must exist.');
 
@@ -86,10 +75,7 @@ class SimpleArrayTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
-    public function itCanValidateAnInputByItsFiltersAndOptionalFieldFilters()
+    public function testItCanValidateAnInputByItsFiltersAndOptionalFieldFilters()
     {
         $this->assertTrue(method_exists($this->class, 'validate'), 'Method validate must exist.');
 
@@ -110,11 +96,10 @@ class SimpleArrayTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
      * @expectedException InvalidArgumentException
      * @expectedExceptionRegExp /Invalid params: \w+/
      */
-    public function itMustThrowInvalidArgumentExceptionWhenAnyOptionalFieldIsNotValid()
+    public function testItMustThrowInvalidArgumentExceptionWhenAnyOptionalFieldIsNotValid()
     {
         $this->assertTrue(method_exists($this->class, 'validate'), 'Method validate must exist.');
 
@@ -134,10 +119,7 @@ class SimpleArrayTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
-    public function itCanValidateOnlyOptionalFields()
+    public function testItCanValidateOnlyOptionalFields()
     {
         $this->assertTrue(method_exists($this->class, 'validate'), 'Method validate must exist.');
 
@@ -151,10 +133,9 @@ class SimpleArrayTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
      * @expectedException RuntimeException
      */
-    public function itMustThrowRuntimeExceptionWhenCallValidateMethodWithNeitherFieldsNorRequiredFields()
+    public function testItMustThrowRuntimeExceptionWhenCallValidateMethodWithNeitherFieldsNorRequiredFields()
     {
         $this->assertTrue(method_exists($this->class, 'validate'), 'Method validate must exist.');
 
