@@ -223,4 +223,34 @@ class SimpleArrayTest extends \PHPUnit_Framework_TestCase
         $specDescription = 'This is a test, to know more about it click here';
         $this->assertEquals($specDescription, $validArray['description'], 'description must be ' . $specDescription);
     }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessageRegExp /Cannot remove the field \w+. This field is about to be validated./
+     */
+    public function testItMustThrowRuntimeExceptionWhenTryingToRemoveAFieldThatIsInSomeRule()
+    {
+        $this->assertTrue(method_exists($this->class, 'removeOnly'), 'Method removeOnly must exist.');
+
+        $input = [
+            'id' => '55test',
+            'name' => '<strong>Diogo</strong>',
+            'description' => "<b>This is a test</b>, to know more about it <a href='index.phtml'>click here</a>"
+        ];
+
+        $rules = [
+            'id' => FILTER_SANITIZE_NUMBER_INT,
+            'name' => FILTER_SANITIZE_STRING,
+            'description' => FILTER_SANITIZE_STRING
+        ];
+
+        $fieldsToRemove = [
+            'id',
+        ];
+
+        $this->class
+            ->setFields($rules)
+            ->removeOnly($fieldsToRemove)
+            ->validate($input);
+    }
 }

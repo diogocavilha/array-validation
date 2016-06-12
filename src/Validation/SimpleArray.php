@@ -16,6 +16,7 @@ class SimpleArray
     private $requiredFields = [];
     private $fields = [];
     private $validFields = [];
+    private $fieldsToRemove = [];
 
     /**
      * Sets an array of required fields to be checked.
@@ -51,9 +52,31 @@ class SimpleArray
         return $this;
     }
 
+    private function checkFieldsToRemove(array $allfields)
+    {
+        foreach ($this->fieldsToRemove as $field) {
+            $this->checkIfFieldIsAboutToBeValidated($field, $allfields);
+        }
+    }
+
+    private function checkIfFieldIsAboutToBeValidated($field, array $allfields)
+    {
+        if (array_key_exists($field, $allfields)) {
+            throw new RuntimeException(
+                sprintf('Cannot remove the field %s. This field is about to be validated.', $field)
+            );
+        }
+    }
+
     private function getFieldsToRemove(array $input)
     {
         $allfields = array_merge($this->requiredFields, $this->fields);
+
+        if (!empty($this->fieldsToRemove)) {
+            $this->checkFieldsToRemove($allfields);
+            return $this->fieldsToRemove;
+        }
+
         return array_diff(array_keys($input), array_keys($allfields));
     }
 
@@ -131,5 +154,11 @@ class SimpleArray
     public function getValidArray()
     {
         return $this->validFields;
+    }
+
+    public function removeOnly(array $fields)
+    {
+        $this->fieldsToRemove = $fields;
+        return $this;
     }
 }
