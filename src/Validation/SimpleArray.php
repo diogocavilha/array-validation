@@ -63,7 +63,7 @@ class SimpleArray
     {
         if (array_key_exists($field, $allfields)) {
             throw new RuntimeException(
-                sprintf('Cannot remove the field %s. This field is about to be validated.', $field)
+                sprintf('Cannot remove the field "%s". This field is about to be validated.', $field)
             );
         }
     }
@@ -120,7 +120,24 @@ class SimpleArray
     private function applyFilterTo(array $input)
     {
         $this->requiredFields = array_merge($this->requiredFields, $this->fields);
-        return array_filter(filter_var_array($input, $this->requiredFields));
+        $filtered = array_filter(filter_var_array($input, $this->requiredFields));
+        $fieldsDiff = array_diff(array_keys($input), array_keys($filtered));
+
+        foreach ($fieldsDiff as $field) {
+            $filtered = $this->addNotRemovedFields($input, $filtered, $field);
+        }
+
+        return $filtered;
+    }
+
+    private function addNotRemovedFields(array $input, array $filtered, $field)
+    {
+        if (!in_array($field, array_keys($this->requiredFields))) {
+            $filtered[$field] = $input[$field];
+            $this->requiredFields[$field] = $input[$field];
+        }
+
+        return $filtered;
     }
 
     private function validateFields(array $input)

@@ -112,7 +112,7 @@ class SimpleArrayTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      * @expectedException InvalidArgumentException
-     * @expectedExceptionRegEx /Invalid params: \w+/
+     * @expectedExceptionRegExp /Invalid params: \w+/
      */
     public function itMustThrowInvalidArgumentExceptionWhenAnyOptionalFieldIsNotValid()
     {
@@ -192,7 +192,7 @@ class SimpleArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($description = 'This is a test, to know more about it click here', $validArray['description'], 'It must be ' . $description);
     }
 
-    public function testItMustRemoveFieldsThatAreNotPresentInRules()
+    public function testItMustRemoveAllFieldsThatAreNotPresentInRules()
     {
         $input = [
             'ignored' => 'This field must be ignored',
@@ -226,7 +226,7 @@ class SimpleArrayTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException RuntimeException
-     * @expectedExceptionMessageRegExp /Cannot remove the field \w+. This field is about to be validated./
+     * @expectedExceptionMessageRegExp /Cannot remove the field "\w+". This field is about to be validated./
      */
     public function testItMustThrowRuntimeExceptionWhenTryingToRemoveAFieldThatIsInSomeRule()
     {
@@ -252,5 +252,42 @@ class SimpleArrayTest extends \PHPUnit_Framework_TestCase
             ->setFields($rules)
             ->removeOnly($fieldsToRemove)
             ->validate($input);
+    }
+
+    /**
+     * @dataProvider fieldsProvider
+     */
+    public function testItCanRemoveOnlySomeFieldsFromInputArray($fieldsToRemove, $fieldToRemove)
+    {
+        $input = [
+            'id' => '55test',
+            'name' => '<strong>Diogo</strong>',
+            'description' => "<b>This is a test</b>, to know more about it <a href='index.phtml'>click here</a>",
+            'email' => 'email@domain.com',
+            'phone' => '5555555',
+        ];
+
+        $rules = [
+            'id' => FILTER_SANITIZE_NUMBER_INT,
+            'name' => FILTER_SANITIZE_STRING,
+            'description' => FILTER_SANITIZE_STRING
+        ];
+
+        $this->class
+            ->setFields($rules)
+            ->removeOnly($fieldsToRemove)
+            ->validate($input);
+
+        $data = $this->class->getValidArray();
+
+        $this->assertArrayNotHasKey($fieldToRemove, $data);
+    }
+
+    public function fieldsProvider()
+    {
+        return [
+            [['email'], 'email'],
+            [['phone'], 'phone'],
+        ];
     }
 }
