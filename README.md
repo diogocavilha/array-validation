@@ -18,8 +18,10 @@ Methods:
 - `setFields(array $fieldsRules)`
 - `setRequiredFields(array $requiredFieldsRules)`
 - `validate(array $input)`
+- `isValid(array $input)`
 - `removeOnly(array $fieldsToRemove)`
 - `getValidArray()`
+- `getMessages()`
 
 Validating required fields:
 
