@@ -142,3 +142,5 @@ $data = $validatorArray->getValidArray(); // It will return only 'id', 'name' an
 $validatorArray->removeOnly(['phone']);
 $data = $validatorArray->getValidArray(); // It will return 'id', 'name', 'age' and 'email'
 ```
+
+If you don't want automatic exceptions, you can call the method `isValid` instead of `validate`.
