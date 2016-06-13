@@ -3,7 +3,7 @@
 
 # Array validation
 
-That's a simple array validator which uses the native PHP filters and validators.
+It's a simple array validator which uses native filters and validators from PHP.
 
 # Installing
 
@@ -16,16 +16,27 @@ composer require array/validation
 Methods:
 
 - `setFields(array $fieldsRules)`
+> It adds optional fields to filter/validate.
+
 - `setRequiredFields(array $requiredFieldsRules)`
+> It adds required fields to filter/validate.
+
 - `validate(array $input)`
+> It validates an input array. It throws an exception in case the validation is not satisfied.
+
 - `isValid(array $input)`
+> It validates an input array. It returns `true` in case the input array is valid, otherwise it returns `false`.
+
 - `removeOnly(array $fieldsToRemove)`
+> It removes fields that are not in filter/validation rules.
+
 - `getValidArray()`
+> It returns an array containing the filtered/validated data.
+
 - `getMessages()`
+> It returns an array containing the validation messages. This method should be called after calling the `isValid`.
 
-Validating required fields:
-
-> It throws a `RuntimeException` in case any required field doesn't exist.
+### Validating required fields:
 
 ```php
 <?php
@@ -42,17 +53,15 @@ $arrayToValidate = [
     'age' => 26,
 ];
 
-$validatorArray = new SimpleArray();
-$validatorArray
+$validator = new SimpleArray();
+$validator
     ->setRequiredFields($rules)
     ->validate($arrayToValidate);
 
-$data = $validatorArray->getValidArray();
+$data = $validator->getValidArray();
 ```
 
-Validating optional fields:
-
-> It throws an `InvalidArgumentException` in case any field doesn't have a valid value.
+### Validating optional fields:
 
 ```php
 <?php
@@ -68,15 +77,15 @@ $arrayToValidate = [
     'name' => 'Diogo Alexsander',
 ];
 
-$validatorArray = new SimpleArray();
-$validatorArray
+$validator = new SimpleArray();
+$validator
     ->setFields($rules)
     ->validate($arrayToValidate);
 
-$data = $validatorArray->getValidArray();
+$data = $validator->getValidArray();
 ```
 
-Validating both:
+### Validating both:
 
 ```php
 <?php
@@ -98,16 +107,22 @@ $arrayToValidate = [
     'age' => 26,
 ];
 
-$validatorArray = new SimpleArray();
-$validatorArray
+$validator = new SimpleArray();
+$validator
     ->setFields($fieldsRules)
     ->setRequiredFields($requiredFieldsRules)
     ->validate($arrayToValidate);
 
-$data = $validatorArray->getValidArray();
+$data = $validator->getValidArray();
 ```
 
-The method `removeOnly` can be used for removing some fields from input array. In case you don't call this method, all the other fields will be removed from input array and you will get only the fields you want to validate. If you don't want to lose all the other fields, but even so you want to remove some of them, so you can call `removeOnly` method by passing an array containing the fields you want to remove.
+The `removeOnly` method can be used to remove a few fields from input array.
+
+In case it's not called, all the other fields that are not present in the filter/validation rules will be removed from input array.
+
+If you wish to remove just a few fields from input array, the method `removeOnly` can be called by passing an array containing the fields you wish to remove.
+
+> Ps: It's not possible to remove a field that is present in filter/validation rules, if so, it will throw a `RuntimeException`.
 
 ```php
 <?php
@@ -131,16 +146,54 @@ $arrayToValidate = [
     'phone' => 'unwanted',
 ];
 
-$validatorArray = new SimpleArray();
-$validatorArray
+$validator = new SimpleArray();
+$validator
     ->setFields($fieldsRules)
     ->setRequiredFields($requiredFieldsRules)
     ->validate($arrayToValidate);
 
-$data = $validatorArray->getValidArray(); // It will return only 'id', 'name' and 'age'
+$data = $validator->getValidArray(); // It will return only 'id', 'name' and 'age'
 
-$validatorArray->removeOnly(['phone']);
-$data = $validatorArray->getValidArray(); // It will return 'id', 'name', 'age' and 'email'
+$validator->removeOnly(['phone']);
+$data = $validator->getValidArray(); // It will return 'id', 'name', 'age' and 'email'
 ```
 
-If you don't want automatic exceptions, you can call the method `isValid` instead of `validate`.
+If you don't want validator automatically throw exceptions when the validation is not satisfied, it's possible to call the method `isValid` instead of `validate`.
+
+After that, you can call the method `getMessages` to get an array containing the validation messages.
+
+#### Sample:
+
+```php
+<?php
+
+$input = [
+    'name' => '<strong>Diogo</strong>',
+    'description' => "<b>This is a test</b>, to know more about it <a href='index.phtml'>click here</a>",
+    'email' => 'email@domain.com',
+    'phone' => '5555555 - test',
+];
+
+$rules = [
+    'phone' => FILTER_VALIDATE_INT,
+    'name' => FILTER_SANITIZE_STRING,
+    'description' => FILTER_SANITIZE_STRING
+];
+
+$rulesRequired = [
+    'id' => FILTER_VALIDATE_INT,
+    'code' => FILTER_VALIDATE_INT,
+];
+
+$validator = new SimpleArray();
+$validator
+    ->setFields($rules)
+    ->setRequiredFields($rulesRequired);
+    
+if (!$validator->isValid($input)) {
+    $messages = $validator->getMessages();
+    foreach ($messages as $message) {
+        echo $message, '<br>';
+    }
+}
+```
