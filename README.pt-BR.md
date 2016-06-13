@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/diogocavilha/array-validation.svg?branch=master)](https://travis-ci.org/diogocavilha/array-validation)
 [![Latest Stable Version](https://img.shields.io/packagist/v/array/validation.svg?style=flat-square)](https://packagist.org/packages/array/validation)
 
-[English documentation](https://github.com/diogocavilha/array-validation/blob/dev-master/README.md)
+[English documentation/Documentação em inglês](https://github.com/diogocavilha/array-validation/blob/dev-master/README.md)
 
 # Array validation
 
