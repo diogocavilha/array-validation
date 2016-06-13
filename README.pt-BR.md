@@ -166,7 +166,7 @@ Se você não quer que o validador lance excessões automáticas quando a valida
 
 Depois disso, o método `getMessages` pode ser chamado para retornar um array com as mensagens de validação.
 
-Exemplo:
+#### Exemplo:
 
 ```php
 <?php
