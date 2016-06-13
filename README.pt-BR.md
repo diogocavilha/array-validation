@@ -16,16 +16,16 @@ composer require array/validation
 Métodos:
 
 - `setFields(array $fieldsRules)`
-> Adiciona campos opcionais para validação/filtro.
+> Adiciona campos opcionais para filtro/validação.
 
 - `setRequiredFields(array $requiredFieldsRules)`
-> Adiciona campos obrigatórios para validação/filtro.
+> Adiciona campos obrigatórios para filtro/validação.
 
 - `validate(array $input)`
 > Valida um array de entrada. Lança excessão caso a validação não seja satisfeita.
 
 - `isValid(array $input)`
-> Valida um array de entrada. Retorna `true` caso a validação seja satisfeita, caso contrário retorna `false`.
+> Valida um array de entrada. Retorna `true` caso o array de entrada seja válido, caso contrário retorna `false`.
 
 - `removeOnly(array $fieldsToRemove)`
 > Remove campos que não estão listados nas regras de filtro/validação.
