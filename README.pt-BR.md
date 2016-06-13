@@ -1,44 +1,46 @@
 [![Build Status](https://travis-ci.org/diogocavilha/array-validation.svg?branch=master)](https://travis-ci.org/diogocavilha/array-validation)
 [![Latest Stable Version](https://img.shields.io/packagist/v/array/validation.svg?style=flat-square)](https://packagist.org/packages/array/validation)
 
-[Documentação em português/Portuguese documentation](https://github.com/diogocavilha/array-validation/blob/dev-master/README.pt-BR.md)
+[English documentation/Documentação em inglês](https://github.com/diogocavilha/array-validation/blob/dev-master/README.md)
 
 # Array validation
 
-It's a simple array validator which uses native filters and validators from PHP.
+É um simples validador de array que utiliza os filtros e validadores nativos do PHP.
 
-# Installing
+# Instalação
 
 ```bash
 composer require array/validation
 ```
 
-# Usage
+# Utilização
 
-Methods:
+Métodos:
 
 - `setFields(array $fieldsRules)`
-> It adds optional fields to filter/validate.
+> Adiciona campos opcionais para filtro/validação.
 
 - `setRequiredFields(array $requiredFieldsRules)`
-> It adds required fields to filter/validate.
+> Adiciona campos obrigatórios para filtro/validação.
 
 - `validate(array $input)`
-> It validates an input array. It throws an exception in case the validation is not satisfied.
+> Valida um array de entrada. Lança excessão caso a validação não seja satisfeita.
 
 - `isValid(array $input)`
-> It validates an input array. It returns `true` in case the input array is valid, otherwise it returns `false`.
+> Valida um array de entrada. Retorna `true` caso o array de entrada seja válido, caso contrário retorna `false`.
 
 - `removeOnly(array $fieldsToRemove)`
-> It removes fields that are not in filter/validation rules.
+> Remove campos que não estão listados nas regras de filtro/validação.
 
 - `getValidArray()`
-> It returns an array containing the filtered/validated data.
+> Retorna um array com os dados filtrados/validados.
 
 - `getMessages()`
-> It returns an array containing the validation messages. This method should be called after calling the `isValid`.
+> Retorna um array com as mensagens de validação. Deve ser chamado após a chamada do método `isValid`
 
-### Validating required fields:
+### Validando campos obrigatórios:
+
+> Lança uma `RuntimeException` caso algum campo obrigatório não exista no input.
 
 ```php
 <?php
@@ -63,7 +65,9 @@ $validator
 $data = $validator->getValidArray();
 ```
 
-### Validating optional fields:
+### Validando campos opcionais:
+
+> Lança uma `InvalidArgumentException` caso algum campo não tenha um valor válido.
 
 ```php
 <?php
@@ -87,7 +91,7 @@ $validator
 $data = $validator->getValidArray();
 ```
 
-### Validating both:
+### Validando ambos:
 
 ```php
 <?php
@@ -118,13 +122,13 @@ $validator
 $data = $validator->getValidArray();
 ```
 
-The `removeOnly` method can be used to remove a few fields from input array.
+O método `removeOnly` pode ser utilizado para remover alguns campos do array de entrada.
 
-In case it's not called, all the other fields that are not present in the filter/validation rules will be removed from input array.
+Caso esse método não seja chamado, todos os outros campos que não estão nas regras de filtro/validação serão removidos do array de entrada. 
 
-If you wish to remove just a few fields from input array, the method `removeOnly` can be called by passing an array containing the fields you wish to remove.
+Se você deseja remover apenas alguns campos do array de entrada, o método `removeOnly` pode ser chamado passando um array com os campos que deseja remover.
 
-> Ps: It's not possible to remove a field that is present in filter/validation rules, if so, it will throw a `RuntimeException`.
+> Obs: Não é possível remover um campo que exista nas regras de filtro/validação, isso resultará em uma `RuntimeException`.
 
 ```php
 <?php
@@ -154,17 +158,17 @@ $validator
     ->setRequiredFields($requiredFieldsRules)
     ->validate($arrayToValidate);
 
-$data = $validator->getValidArray(); // It will return only 'id', 'name' and 'age'
+$data = $validator->getValidArray(); // Irá retornar apenas 'id', 'name' e 'age'
 
 $validator->removeOnly(['phone']);
-$data = $validator->getValidArray(); // It will return 'id', 'name', 'age' and 'email'
+$data = $validator->getValidArray(); // Irá retornar 'id', 'name', 'age' e 'email'
 ```
 
-If you don't want validator automatically throw exceptions when the validation is not satisfied, it's possible to call the method `isValid` instead of `validate`.
+Se você não quer que o validador lance excessões automáticas quando a validação não é satisfeita, é possível chamar o método `isValid` no lugar de `validade`.
 
-After that, you can call the method `getMessages` to get an array containing the validation messages.
+Depois disso, o método `getMessages` pode ser chamado para retornar um array com as mensagens de validação.
 
-#### Sample:
+#### Exemplo:
 
 ```php
 <?php
