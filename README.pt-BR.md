@@ -55,12 +55,12 @@ $arrayToValidate = [
     'age' => 26,
 ];
 
-$validatorArray = new SimpleArray();
-$validatorArray
+$validator = new SimpleArray();
+$validator
     ->setRequiredFields($rules)
     ->validate($arrayToValidate);
 
-$data = $validatorArray->getValidArray();
+$data = $validator->getValidArray();
 ```
 
 ### Validando campos opcionais:
@@ -81,12 +81,12 @@ $arrayToValidate = [
     'name' => 'Diogo Alexsander',
 ];
 
-$validatorArray = new SimpleArray();
-$validatorArray
+$validator = new SimpleArray();
+$validator
     ->setFields($rules)
     ->validate($arrayToValidate);
 
-$data = $validatorArray->getValidArray();
+$data = $validator->getValidArray();
 ```
 
 ### Validando ambos:
@@ -111,13 +111,13 @@ $arrayToValidate = [
     'age' => 26,
 ];
 
-$validatorArray = new SimpleArray();
-$validatorArray
+$validator = new SimpleArray();
+$validator
     ->setFields($fieldsRules)
     ->setRequiredFields($requiredFieldsRules)
     ->validate($arrayToValidate);
 
-$data = $validatorArray->getValidArray();
+$data = $validator->getValidArray();
 ```
 
 O método `removeOnly` pode ser utilizado para remover alguns campos do array de entrada.
@@ -150,16 +150,16 @@ $arrayToValidate = [
     'phone' => 'unwanted',
 ];
 
-$validatorArray = new SimpleArray();
-$validatorArray
+$validator = new SimpleArray();
+$validator
     ->setFields($fieldsRules)
     ->setRequiredFields($requiredFieldsRules)
     ->validate($arrayToValidate);
 
-$data = $validatorArray->getValidArray(); // Irá retornar apenas 'id', 'name' e 'age'
+$data = $validator->getValidArray(); // Irá retornar apenas 'id', 'name' e 'age'
 
-$validatorArray->removeOnly(['phone']);
-$data = $validatorArray->getValidArray(); // Irá retornar 'id', 'name', 'age' e 'email'
+$validator->removeOnly(['phone']);
+$data = $validator->getValidArray(); // Irá retornar 'id', 'name', 'age' e 'email'
 ```
 
 Se você não quer que o validador lance excessões automáticas quando a validação não é satisfeita, é possível chamar o método `isValid` no lugar de `validade`.
