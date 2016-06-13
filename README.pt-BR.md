@@ -165,3 +165,39 @@ $data = $validatorArray->getValidArray(); // Irá retornar 'id', 'name', 'age' e
 Se você não quer que o validador lance excessões automáticas quando a validação não é satisfeita, é possível chamar o método `isValid` no lugar de `validade`.
 
 Depois disso, o método `getMessages` pode ser chamado para retornar um array com as mensagens de validação.
+
+Exemplo:
+
+```php
+<?php
+
+$input = [
+    'name' => '<strong>Diogo</strong>',
+    'description' => "<b>This is a test</b>, to know more about it <a href='index.phtml'>click here</a>",
+    'email' => 'email@domain.com',
+    'phone' => '5555555 - test',
+];
+
+$rules = [
+    'phone' => FILTER_VALIDATE_INT,
+    'name' => FILTER_SANITIZE_STRING,
+    'description' => FILTER_SANITIZE_STRING
+];
+
+$rulesRequired = [
+    'id' => FILTER_VALIDATE_INT,
+    'code' => FILTER_VALIDATE_INT,
+];
+
+$validator = new SimpleArray();
+$validator
+    ->setFields($rules)
+    ->setRequiredFields($rulesRequired);
+    
+if (!$validator->isValid($input)) {
+    $messages = $validator->getMessages();
+    foreach ($messages as $message) {
+        echo $message, '<br>';
+    }
+}
+```
