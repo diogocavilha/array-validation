@@ -3,7 +3,7 @@
 
 # Array validation
 
-É uma simples validador de array que utiliza os filtros e validadores nativos do PHP.
+É um simples validador de array que utiliza os filtros e validadores nativos do PHP.
 
 # Instalação
 
