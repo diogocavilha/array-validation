@@ -13,17 +13,30 @@ composer require array/validation
 
 # Utilização
 
-Método:
+Métodos:
 
 - `setFields(array $fieldsRules)`
-- `setRequiredFields(array $requiredFieldsRules)`
-- `validate(array $input)`
-- `isValid(array $input)`
-- `removeOnly(array $fieldsToRemove)`
-- `getValidArray()`
-- `getMessages()`
+> Adiciona campos opcionais para validação/filtro.
 
-Validando campos obrigatórios:
+- `setRequiredFields(array $requiredFieldsRules)`
+> Adiciona campos obrigatórios para validação/filtro.
+
+- `validate(array $input)`
+> Valida um array de entrada. Lança excessão caso a validação não seja satisfeita.
+
+- `isValid(array $input)`
+> Valida um array de entrada. Retorna `true` caso a validação seja satisfeita, caso contrário retorna `false`.
+
+- `removeOnly(array $fieldsToRemove)`
+> Remove campos que não estão listados nas regras de filtro/validação.
+
+- `getValidArray()`
+> Retorna um array com os dados filtrados/validados.
+
+- `getMessages()`
+> Retorna um array com as mensagens de validação. Deve ser chamado após a chamada do método `isValid`
+
+### Validando campos obrigatórios:
 
 > Lança uma `RuntimeException` caso algum campo obrigatório não exista no input.
 
@@ -50,7 +63,7 @@ $validatorArray
 $data = $validatorArray->getValidArray();
 ```
 
-Validando campos opcionais:
+### Validando campos opcionais:
 
 > Lança uma `InvalidArgumentException` caso algum campo não tenha um valor válido.
 
@@ -76,7 +89,7 @@ $validatorArray
 $data = $validatorArray->getValidArray();
 ```
 
-Validando ambos:
+### Validando ambos:
 
 ```php
 <?php
@@ -107,11 +120,11 @@ $validatorArray
 $data = $validatorArray->getValidArray();
 ```
 
-O método `removeOnly` pode ser utilizado para remover alguns campos do input. 
+O método `removeOnly` pode ser utilizado para remover alguns campos do array de entrada.
 
-Caso esse método não seja chamado, todos os outros campos que não estão nas regras de validação/filtro serão removidos do input. 
+Caso esse método não seja chamado, todos os outros campos que não estão nas regras de filtro/validação serão removidos do array de entrada. 
 
-Se você deseja remover apenas alguns campos do niput, o método `removeOnly` pode ser chamado passando um array com os campos que deseja remover.
+Se você deseja remover apenas alguns campos do array de entrada, o método `removeOnly` pode ser chamado passando um array com os campos que deseja remover.
 
 > Obs: Não é possível remover um campo que exista nas regras de filtro/validação, isso resultará em uma `RuntimeException`.
 
@@ -143,12 +156,12 @@ $validatorArray
     ->setRequiredFields($requiredFieldsRules)
     ->validate($arrayToValidate);
 
-$data = $validatorArray->getValidArray(); // Irá retornar 'id', 'name' e 'age'
+$data = $validatorArray->getValidArray(); // Irá retornar apenas 'id', 'name' e 'age'
 
 $validatorArray->removeOnly(['phone']);
 $data = $validatorArray->getValidArray(); // Irá retornar 'id', 'name', 'age' e 'email'
 ```
 
-Se você não quer que o validador lance excessões automáticas quando a validação não passa, é possível chamar o método `isValid` no lugar de `validade`.
+Se você não quer que o validador lance excessões automáticas quando a validação não é satisfeita, é possível chamar o método `isValid` no lugar de `validade`.
 
-Caso o método `isValid` retorne `false`, o método `getMessages` retornará um array com as mensagens de validação.
+Depois disso, o método `getMessages` pode ser chamado para retornar um array com as mensagens de validação.
