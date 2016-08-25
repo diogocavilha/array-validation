@@ -92,13 +92,29 @@ class SimpleArray
         return $input;
     }
 
-    public function validate(array $input)
+    private function validateParameters()
     {
         if (empty($this->requiredFields) && empty($this->fields)) {
             throw new RuntimeException('There are no fields for validating.');
         }
+    }
+
+    private function recreateFieldsFromInput(array $input)
+    {
+        foreach ($this->fields as $key => $value) {
+            if (!array_key_exists($key, $input)) {
+                unset($this->fields[$key]);
+            }
+        }
+    }
+
+    public function validate(array $input)
+    {
+        $this->validateParameters();
 
         $input = $this->getInputWithoutUnwantedFields($input);
+
+        $this->recreateFieldsFromInput($input);
 
         $this->validateRequiredFields($input);
         $this->validateFields($input);
@@ -219,7 +235,11 @@ class SimpleArray
 
     public function isValid(array $input)
     {
+        $this->validateParameters();
+
         $input = $this->getInputWithoutUnwantedFields($input);
+
+        $this->recreateFieldsFromInput($input);
 
         $this->validateRequiredFieldsForMessage($input);
         $this->validateFieldsForMessage($input);

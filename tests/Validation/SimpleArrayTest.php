@@ -360,4 +360,28 @@ class SimpleArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $specMessages);
         $this->assertCount(3, $specMessages);
     }
+
+    public function testItMustRecreateOptionalFieldsFromInput()
+    {
+        $input = [
+            'id' => 1,
+            'name' => 'Diogo',
+            'email' => 'email@domain.com'
+        ];
+
+        $rules = [
+            'name' => FILTER_SANITIZE_STRING,
+            'email' => FILTER_VALIDATE_EMAIL,
+            'phone' => FILTER_SANITIZE_STRING,
+        ];
+
+        $requiredRules = [
+            'id' => FILTER_SANITIZE_NUMBER_INT,
+        ];
+
+        $this->class
+            ->setFields($rules)
+            ->setRequiredFields($requiredRules)
+            ->validate($input);
+    }
 }
