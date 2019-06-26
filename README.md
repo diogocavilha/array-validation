@@ -3,7 +3,7 @@
 
 [Documentação em português/Portuguese documentation](https://github.com/diogocavilha/array-validation/blob/master/README.pt-BR.md)
 
-# Array validation (Abandoned!)
+# Array validation
 
 It's a simple array validator which uses native filters and validators from PHP.
 
