@@ -2,7 +2,7 @@
 
 use Validation\SimpleArray;
 
-class SimpleArrayTest extends \PHPUnit_Framework_TestCase
+class SimpleArrayTest extends \PHPUnit\Framework\TestCase
 {
     private $class;
 
